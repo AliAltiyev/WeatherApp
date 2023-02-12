@@ -33,13 +33,18 @@ _getUserLocation() async {
   debugPrint(location.longitude.toString());
   debugPrint(location.lantitute.toString());
 
-  getData(location.lantitute, location.lantitute);
+  getData(location.lantitute, location.longitude);
 }
 
 getData(double? lat, double? lon) async {
-  const apiKey = '465df165e7c9d49afd54891fd428ce6c';
+  const apiKey = '027bf4ee480d431a24bc92dd3438f942';
 
-  var future = await http.get(Uri.parse(
-      'http://api.openweathermap.org/data/3.0/weather?q=minsk&appid=$apiKey'));
-  print(future.body);
+  http.Response response = await http.get(Uri.parse(
+      'http://api.weatherstack.com/current?access_key=$apiKey&query=Minsk'));
+
+  if (response.statusCode == 200) {
+    print(response.body);
+  } else {
+    print(response.statusCode);
+  }
 }
