@@ -39,11 +39,20 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SpinKitFadingCircle(
-          color: Colors.deepPurple,
-        ),
+        body: Center(
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/splash.png',
+           fit: BoxFit.fill,
+          ),
+          Center(
+            child: SpinKitFadingCircle(
+              color: Colors.deepPurple,
+            ),
+          )
+        ],
       ),
-    );
+    ));
   }
 }
