@@ -1,5 +1,8 @@
+import 'package:date_formatter/date_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../service/weather.dart';
 
 class LocationPageContent extends StatefulWidget {
   final location;
@@ -15,18 +18,33 @@ class _LocationPageContentState extends State<LocationPageContent> {
   late String weatherImg;
   late String cityName;
   late String countryName;
+  late int windDegree;
+  late int windSpeed;
+  late int humidity;
+  late Weather weather;
 
   @override
   void initState() {
     super.initState();
+    weather = Weather();
     updateUi(widget.location);
   }
 
   updateUi(dynamic weather) {
-    temp = weather['current']['temperature'];
-    weatherImg = weather['current']['weather_icons'][0];
-    cityName = weather['location']['name'];
-    countryName = weather['location']['country'];
+    setState(() {
+      temp = weather['current']['temperature'];
+      weatherImg = weather['current']['weather_icons'][0];
+      cityName = weather['location']['name'];
+      countryName = weather['location']['country'];
+      windDegree = weather['current']['wind_degree'];
+      windSpeed = weather['current']['wind_speed'];
+      humidity = weather['current']['humidity'];
+    });
+  }
+
+  _getNewUserLocation() async {
+    final newWeather = await weather.getUserLocation();
+    updateUi(newWeather);
   }
 
   @override
@@ -36,36 +54,136 @@ class _LocationPageContentState extends State<LocationPageContent> {
         Container(
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               CircleAvatar(
                 backgroundImage: NetworkImage(weatherImg),
                 radius: 40,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text(
                 " ${temp.toString()}°",
                 style: GoogleFonts.inter(
-                    textStyle:
-                        TextStyle(fontSize: 32, fontWeight: FontWeight.w800)),
+                    textStyle: const TextStyle(
+                        fontSize: 32, fontWeight: FontWeight.w800)),
               ),
-              SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Text(
                 cityName,
                 style: GoogleFonts.inter(
-                    textStyle:
-                    TextStyle(fontSize: 24, fontWeight: FontWeight.w300)),
+                    textStyle: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.w300)),
               ),
               Text(
-               countryName,
+                countryName,
                 style: GoogleFonts.inter(
-                    textStyle:
-                    TextStyle(fontSize: 24, fontWeight: FontWeight.w300)),
-              )
+                    textStyle: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.w300)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                      color: Colors.white12,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.speed_outlined),
+                          Text(
+                            "${windDegree.toString()} km/h",
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.wind_power),
+                          Text(
+                            '${windSpeed}%',
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.water_drop),
+                          Text(
+                            '${humidity}%',
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.all(20),
+                height: 200,
+                decoration: const BoxDecoration(
+                    color: Colors.white12,
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            'Today',
+                            style: GoogleFonts.inter(fontSize: 20),
+                          ),
+                          Text(
+                            DateFormatter.formatDateTime(
+                                dateTime: DateTime.now(),
+                                outputFormat: 'dd/MM'),
+                            style: GoogleFonts.inter(fontSize: 20),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(child: Image.asset('assets/dayline.png')),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 120, right: 30),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          debugPrint('clicked');
+                          _getNewUserLocation();
 
+                        });
+                      },
+                      child: const Icon(
+                        Icons.navigation,
+                        size: 50,
+                        shadows: [Shadow(color: Colors.white, blurRadius: 50)],
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         )
