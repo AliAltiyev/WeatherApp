@@ -18,7 +18,7 @@ class _LocationScreenState extends State<LocationScreen> {
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-                colors: [Color(0xff1E1E1E), Color(0xff1e3e1e)],
+                colors: [Color(0xff1E1E1E), Color(0xff1e1e5e)],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter)),
         child: LocationPageContent(
