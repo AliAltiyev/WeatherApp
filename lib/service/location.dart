@@ -6,10 +6,13 @@ class UserLocation {
 
   //Get Location
   Future<void> getUserLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.whileInUse) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low);
 
-    lan = position.latitude;
-    long = position.longitude;
+      lan = position.latitude;
+      long = position.longitude;
+    }
   }
 }
