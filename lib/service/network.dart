@@ -7,6 +7,7 @@ class Network {
 
   Network(this.url);
 
+
   Future<dynamic> getData() async {
     http.Response response = await http.get(Uri.parse(url));
 
