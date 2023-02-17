@@ -110,7 +110,7 @@ class _LocationPageContentState extends State<LocationPageContent> {
                       children: [
                         const Icon(Icons.wind_power),
                         Text(
-                          '${windSpeed}%',
+                          '$windSpeed%',
                           style: const TextStyle(
                             fontSize: 20,
                           ),
@@ -121,7 +121,7 @@ class _LocationPageContentState extends State<LocationPageContent> {
                       children: [
                         const Icon(Icons.water_drop),
                         Text(
-                          '${humidity}%',
+                          '$humidity%',
                           style: const TextStyle(
                             fontSize: 20,
                           ),
@@ -169,15 +169,19 @@ class _LocationPageContentState extends State<LocationPageContent> {
                     style: const ButtonStyle(
                         backgroundColor:
                             MaterialStatePropertyAll(Colors.white12)),
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      String city = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CityScreen()));
+                              builder: (context) => const CityScreen()));
+                      setState(() async {
+                        var data = await weather.searchCityWithName(city);
+                        updateUi(data);
+                      });
                     },
                     child: Row(
                       children: [
-                        Icon(Icons.search),
+                        const Icon(Icons.search),
                         Text(
                           'Search City',
                           style: GoogleFonts.inter(fontSize: 24),
@@ -187,7 +191,6 @@ class _LocationPageContentState extends State<LocationPageContent> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      debugPrint('clicked');
                       _getNewUserLocation();
                     });
                   },
